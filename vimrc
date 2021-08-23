@@ -20,10 +20,10 @@ Plug 'chriskempson/base16-vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'danro/rename.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'godlygeek/tabular'
+" Plug 'godlygeek/tabular'
 Plug 'gorkunov/smartpairs.vim'
-Plug 'henrik/vim-ruby-runner', { 'for': 'ruby' }
-Plug 'kchmck/vim-coffee-script', { 'for': 'coffeescript' }
+" Plug 'henrik/vim-ruby-runner', { 'for': 'ruby' }
+" Plug 'kchmck/vim-coffee-script', { 'for': 'coffeescript' }
 Plug 'lilydjwg/colorizer'
 Plug 'mileszs/ack.vim'
 Plug 'msanders/snipmate.vim'
@@ -33,14 +33,28 @@ Plug 'rstacruz/sparkup', { 'rtp': 'vim/' }
 Plug 'scrooloose/nerdtree'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-endwise'
+" Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rails'
-Plug 'tpope/vim-rhubarb'
+" Plug 'tpope/vim-rails'
+" Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-sensible'
 Plug 'w0rp/ale'
 
 call plug#end()
+
+let mapleader=","
+
+inoremap <leader><leader> <Esc>
+nnoremap <leader>w :w<CR>
+nnoremap <leader>t :tabe %<CR>
+nnoremap <leader>z :tab term<CR>
+nnoremap <leader>b :below term<CR>
+tnoremap <leader><leader> <c-w><N>
+nnoremap <c-j> gT
+nnoremap <c-k> gt
+
+set spell spelllang=en_us
+hi SpellBad ctermul=red cterm=underline
 
 " ┌───────────────────────────────────┐
 " │      Plugins customizations       │
@@ -234,8 +248,8 @@ if has("gui_running") || $TERM == "xterm-256color"
   set t_Co=256
   let base16colorspace=256 " Access colors present in 256 colorspace
   " colorscheme base16-default-dark
-  " colorscheme base16-ocean
-  colorscheme base16-tomorrow-night
+  colorscheme base16-ocean
+  colorscheme gruvbox
 else
   let g:CSApprox_loaded = 0
 endif
@@ -254,7 +268,7 @@ map  <leader>= :call TrimWhiteSpace()<CR>
 map! <leader>= :call TrimWhiteSpace()<CR>
 
 " Removes trailing spaces before saving
-autocmd BufWritePre * :%s/\s\+$//e
+" autocmd BufWritePre * :%s/\s\+$//e
 
 " Add `{:target='_blank'}` to MarkDown links
 function AddTargetBlankToMarkDownLiks()
@@ -456,7 +470,7 @@ endfunction
 map <Leader>f :call OpenFactoryFile()<CR>
 
 map <Leader>v :tab drop $MYVIMRC<CR>
-map <Leader>z :tab drop ~/.zshrc<CR>
+" map <Leader>z :tab drop ~/.zshrc<CR>
 map <Leader>pc :tab drop ~/Dropbox/.personal_configs/aliases_and_functions.sh<CR>
 
 " Search and replace selected text (http://stackoverflow.com/questions/676600/vim-search-and-replace-selected-text)
@@ -474,10 +488,10 @@ function s:MkNonExDir(file, buf)
     endif
   endif
 endfunction
-augroup BWCCreateDir
-  autocmd!
-  autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
+" augroup BWCCreateDir
+"   autocmd!
+"   autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+" augroup END
 
 " Comment out current line or selected text (maintaining visual mode after it)
 vmap <D-/> gcgv
