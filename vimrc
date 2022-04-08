@@ -39,20 +39,27 @@ Plug 'tpope/vim-fugitive'
 " Plug 'tpope/vim-rhubarb'
 Plug 'tpope/vim-sensible'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-surround'
+Plug 'rust-lang/rust.vim'
+Plug 'Rykka/riv.vim'
 
 call plug#end()
 
 let mapleader=","
 
 inoremap <leader><leader> <Esc>
+tnoremap <leader><leader> <c-w>N
 nnoremap <leader>w :w<CR>
 nnoremap <leader>t :tabe %<CR>
 nnoremap <leader>z :tab term<CR>
 nnoremap <leader>b :below term<CR>
-tnoremap <leader><leader> <c-w><N>
+nnoremap <leader>g :Git<CR>
 nnoremap <c-j> gT
 nnoremap <c-k> gt
+nnoremap <leader>h :noh<CR> 
+nnoremap <c-f> :NERDTreeFind<CR>
 
+let g:riv_fold_auto_update = 0
 set spell spelllang=en_us
 hi SpellBad ctermul=red cterm=underline
 
@@ -122,18 +129,24 @@ let g:airline#extensions#syntastic#enabled = 1
 let g:jsx_ext_required = 0
 
 " ALE
+let g:ale_rust_analyzer_executable="/home/thinkredstone/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
+let g:ale_linters = {'rust': ['analyzer']}
 
-let g:ale_sign_error = '❌'
-let g:ale_sign_warning = '🤔'
-
-highlight clear ALEErrorSign
-highlight clear ALEWarningSign
+" highlight clear ALEErrorSign
+" highlight clear ALEWarningSign
 
 " ┌───────────────────────────────────┐
 " │             Settings              │
 " └───────────────────────────────────┘
 
-" Completion
+" ALE settings
+
+function! s:bind_ale()
+  setlocal omnifunc=ale#completion#OmniFunc
+  inoremap <buffer><C-p> <C-x><C-O>
+  nnoremap <buffer><C-]> :ALEGoToDefinition<cr>
+endfunction
+
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
 autocmd FileType python     set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -142,6 +155,8 @@ autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
 autocmd FileType xml        set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c          set omnifunc=ccomplete#Complete
+
+autocmd FileType rust call s:bind_ale()
 
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
@@ -207,7 +222,7 @@ set ignorecase
 
 " Open splits at right side (and below)
 set splitright
-set splitbelow
+" set splitbelow
 
 " Never ever let Vim write a backup file! They did that in the 70’s.
 " Use modern ways for tracking your changes (like git), for God’s sake
@@ -327,7 +342,7 @@ function ConvertRubyHashSyntax()
   ''
 :endfunction
 
-nnoremap <leader>h :call ConvertRubyHashSyntax()<cr>
+" nnoremap <leader>h :call ConvertRubyHashSyntax()<cr>
 
 " Global Search (Ack/Ag) shortcut
 if has("macunix") " macOS
@@ -335,7 +350,7 @@ if has("macunix") " macOS
   nnoremap <D-F> :Ack -i<SPACE>
 else
   " Ctrl + Shift + F
-  nnoremap <C-F> :Ack -i<SPACE>
+"  nnoremap <C-F> :Ack -i<SPACE>
 endif
 
 " Bind K to search for the word under cursor
@@ -420,7 +435,7 @@ function! OpenGemfile()
     execute ":tab drop Gemfile"
   end
 endfunction
-map <Leader>g :call OpenGemfile()<CR>
+" map <Leader>g :call OpenGemfile()<CR>
 
 function! OpenGemfileLock()
   if filereadable("Gemfile.lock")
