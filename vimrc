@@ -17,7 +17,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'andymass/vim-matchup'
 Plug 'bling/vim-airline'
 Plug 'chriskempson/base16-vim'
-Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'danro/rename.vim'
 Plug 'easymotion/vim-easymotion'
 " Plug 'godlygeek/tabular'
@@ -37,11 +39,14 @@ Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-fugitive'
 " Plug 'tpope/vim-rails'
 " Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-dadbod'
 Plug 'tpope/vim-sensible'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-surround'
 Plug 'rust-lang/rust.vim'
 Plug 'Rykka/riv.vim'
+Plug 'preservim/nerdcommenter'
+Plug 'bfrg/vim-qf-preview'
 
 call plug#end()
 
@@ -50,7 +55,7 @@ let mapleader=","
 inoremap <leader><leader> <Esc>
 tnoremap <leader><leader> <c-w>N
 nnoremap <leader>w :w<CR>
-nnoremap <leader>t :tabe %<CR>
+nnoremap <leader>t :tabe %<CR><C-O>
 nnoremap <leader>z :tab term<CR>
 nnoremap <leader>b :below term<CR>
 nnoremap <leader>g :Git<CR>
@@ -58,6 +63,23 @@ nnoremap <c-j> gT
 nnoremap <c-k> gt
 nnoremap <leader>h :noh<CR> 
 nnoremap <c-f> :NERDTreeFind<CR>
+nnoremap <leader>c<space> :NERDCommenterToggle<CR>
+nnoremap <leader>r :ALEFindReferences<CR>
+nnoremap <leader>d :ALEHover<CR>
+nnoremap <c-p> :Files<CR>
+
+" Remove annoying colorizer map
+let g:colorizer_nomap=1
+
+" ┌───────────────────────────────────┐
+" │      Bind preview to ALE windows  │
+" └───────────────────────────────────┘
+
+augroup qfpreview
+    autocmd!
+    autocmd FileType ale-preview-selection nmap <buffer> p <plug>(qf-preview-open)
+    autocmd FileType qf nmap <buffer> p <plug>(qf-preview-open)
+augroup END
 
 let g:riv_fold_auto_update = 0
 set spell spelllang=en_us
@@ -129,8 +151,8 @@ let g:airline#extensions#syntastic#enabled = 1
 let g:jsx_ext_required = 0
 
 " ALE
-let g:ale_rust_analyzer_executable="/home/thinkredstone/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer"
-let g:ale_linters = {'rust': ['analyzer']}
+let g:ale_rust_analyzer_executable="/home/dafner/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer"
+let g:ale_linters = {'rust': ['analyzer'], 'python': ['pyright']}
 
 " highlight clear ALEErrorSign
 " highlight clear ALEWarningSign
@@ -148,7 +170,6 @@ function! s:bind_ale()
 endfunction
 
 autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
-autocmd FileType python     set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html       set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css        set omnifunc=csscomplete#CompleteCSS
@@ -157,6 +178,7 @@ autocmd FileType php        set omnifunc=phpcomplete#CompletePHP
 autocmd FileType c          set omnifunc=ccomplete#Complete
 
 autocmd FileType rust call s:bind_ale()
+autocmd FileType python call s:bind_ale()
 
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
@@ -167,6 +189,9 @@ autocmd FileType ruby,eruby set noballooneval
 
 " Set text width for MarkDown files
 autocmd FileType markdown set textwidth=80
+
+" Make terminals always have no numbering
+autocmd TerminalOpen * setlocal nonumber norelativenumber
 
 " Autoindent with two spaces, always expand tabs
 set tabstop=2
@@ -294,8 +319,6 @@ function AddTargetBlankToMarkDownLiks()
 map <leader>l :call AddTargetBlankToMarkDownLiks()<CR>
 
 " Sets file types
-map  <leader><leader>c :set ft=css<CR>
-map  <leader><leader>C :set ft=coffee<CR>
 map  <leader><leader>e :set ft=eruby<CR>
 map  <leader><leader>h :set ft=html<CR>
 map  <leader><leader>H :set ft=haml<CR>
@@ -414,12 +437,6 @@ endfunction
 :nnoremap <leader>a :AddFocusTag<CR>
 command! -nargs=0 AddFocusTag call s:AddFocusTag()
 
-function! s:RemoveAllFocusTags()
-  call s:Preserve("%s/, focus: true//e")
-endfunction
-:nnoremap <leader>d :RemoveAllFocusTags<CR>
-command! -nargs=0 RemoveAllFocusTags call s:RemoveAllFocusTags()
-
 function! UseSingleQuotes()
   execute ":%s/\"/'/g"
 endfunction
@@ -443,13 +460,6 @@ function! OpenGemfileLock()
   end
 endfunction
 map <Leader>G :call OpenGemfileLock()<CR>
-
-function! OpenRoutes()
-  if filereadable("config/routes.rb")
-    execute ":tab drop config/routes.rb"
-  end
-endfunction
-map <Leader>r :call OpenRoutes()<CR>
 
 function! OpenReadme()
   if filereadable("README.md")
@@ -494,6 +504,7 @@ vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 " Mapping Y to yank from current cursor position till end of line
 noremap Y y$
 
+
 " Creates parent directories on save
 function s:MkNonExDir(file, buf)
   if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
@@ -511,6 +522,26 @@ endfunction
 " Comment out current line or selected text (maintaining visual mode after it)
 vmap <D-/> gcgv
 nmap <D-/> gcc
+
+function! s:get_visual_selection()
+    " Why is this not a built-in Vim script function?!
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end] = getpos("'>")[1:2]
+    let lines = getline(line_start, line_end)
+    if len(lines) == 0
+        return ''
+    endif
+    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][column_start - 1:]
+    return join(lines, "\n")
+endfunction
+
+function! s:selection_DB()
+    let selection = s:get_visual_selection()
+    execute "DB" selection
+endfunction
+
+command! -range -nargs=0 SDB call s:selection_DB()
 
 " ┌───────────────────────────────────┐
 " │             Shortcuts             │
@@ -534,8 +565,8 @@ nnoremap <D-j> :m .+1<CR>==
 nnoremap <D-k> :m .-2<CR>==
 inoremap <D-j> <Esc>:m .+1<CR>==gi
 inoremap <D-k> <Esc>:m .-2<CR>==gi
-vnoremap <D-j> :m '>+1<CR>gv=gv
-vnoremap <D-k> :m '<-2<CR>gv=gv
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
 
 " A trick for when you forgot to sudo before editing a file that requires root privileges (typically /etc/hosts).
 " This lets you use w!! to do that after you opened the file already:
