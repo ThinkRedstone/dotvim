@@ -191,7 +191,7 @@ autocmd FileType ruby,eruby set noballooneval
 autocmd FileType markdown set textwidth=80
 
 " Make terminals always have no numbering
-autocmd TerminalOpen * setlocal nonumber norelativenumber
+autocmd TerminalWinOpen * setlocal nonumber norelativenumber
 
 " Autoindent with two spaces, always expand tabs
 set tabstop=2
