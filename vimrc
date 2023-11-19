@@ -22,7 +22,7 @@ Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'danro/rename.vim'
 Plug 'easymotion/vim-easymotion'
-" Plug 'godlygeek/tabular'
+Plug 'godlygeek/tabular'
 Plug 'gorkunov/smartpairs.vim'
 " Plug 'henrik/vim-ruby-runner', { 'for': 'ruby' }
 " Plug 'kchmck/vim-coffee-script', { 'for': 'coffeescript' }
@@ -47,6 +47,9 @@ Plug 'rust-lang/rust.vim'
 Plug 'Rykka/riv.vim'
 Plug 'preservim/nerdcommenter'
 Plug 'bfrg/vim-qf-preview'
+Plug 'jvirtanen/vim-hcl'
+Plug 'luochen1990/rainbow'
+Plug 'preservim/vim-markdown'
 
 call plug#end()
 
@@ -70,6 +73,8 @@ nnoremap <c-p> :Files<CR>
 
 " Remove annoying colorizer map
 let g:colorizer_nomap=1
+let g:colorizer_maxlines=2000
+let g:rainbow_active = 0
 
 " ┌───────────────────────────────────┐
 " │      Bind preview to ALE windows  │
@@ -84,6 +89,7 @@ augroup END
 let g:riv_fold_auto_update = 0
 set spell spelllang=en_us
 hi SpellBad ctermul=red cterm=underline
+set list
 
 " ┌───────────────────────────────────┐
 " │      Plugins customizations       │
@@ -146,6 +152,7 @@ let g:ctrlp_custom_ignore = {
 " vim-airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#syntastic#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 
 " vim-jsx
 let g:jsx_ext_required = 0
@@ -153,6 +160,9 @@ let g:jsx_ext_required = 0
 " ALE
 let g:ale_rust_analyzer_executable="/home/dafner/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer"
 let g:ale_linters = {'rust': ['analyzer'], 'python': ['pyright']}
+let g:ale_floating_preview=1
+let g:ale_python_auto_virtualenv=1
+set completeopt=menu,popup
 
 " highlight clear ALEErrorSign
 " highlight clear ALEWarningSign
@@ -290,6 +300,7 @@ if has("gui_running") || $TERM == "xterm-256color"
   " colorscheme base16-default-dark
   colorscheme base16-ocean
   colorscheme gruvbox
+  hi SpellBad ctermul=red cterm=underline
 else
   let g:CSApprox_loaded = 0
 endif
@@ -317,19 +328,6 @@ function AddTargetBlankToMarkDownLiks()
 :endfunction
 
 map <leader>l :call AddTargetBlankToMarkDownLiks()<CR>
-
-" Sets file types
-map  <leader><leader>e :set ft=eruby<CR>
-map  <leader><leader>h :set ft=html<CR>
-map  <leader><leader>H :set ft=haml<CR>
-map  <leader><leader>j :set ft=javascript<CR>
-map  <leader><leader>m :set ft=markdown<CR>
-map  <leader><leader>r :set ft=ruby<CR>
-map  <leader><leader>s :set ft=sh<CR>
-map  <leader><leader>S :set ft=sql<CR>
-map  <leader><leader>t :set ft=text<CR>
-map  <leader><leader>x :set ft=xml<CR>
-map  <leader><leader>y :set ft=yaml<CR>
 
 " Adds space between hash content and braces
 function AddsSpaceBetweenHashContentAndBraces()
@@ -543,12 +541,14 @@ endfunction
 
 command! -range -nargs=0 SDB call s:selection_DB()
 
+command! Staging let b:db="postgresql://postgres@staging-database.cwr5toyofssk.us-east-1.rds.amazonaws.com:5432/postgres"
+
 " ┌───────────────────────────────────┐
 " │             Shortcuts             │
 " └───────────────────────────────────┘
 
 "" Set working directory
-nnoremap <leader>. :lcd %:p:h<CR>
+"nnoremap <leader>. :lcd %:p:h<CR>
 
 " Ctrl+R reloads the vimrc file
 nnoremap <F12> :source $MYVIMRC
