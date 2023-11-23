@@ -87,8 +87,8 @@ augroup qfpreview
 augroup END
 
 let g:riv_fold_auto_update = 0
+let g:rustfmt_autosave = 1
 set spell spelllang=en_us
-hi SpellBad ctermul=red cterm=underline
 set list
 
 " ┌───────────────────────────────────┐
