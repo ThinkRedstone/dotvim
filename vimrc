@@ -15,7 +15,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'airblade/vim-gitgutter'
 Plug 'andymass/vim-matchup'
-Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline'
 Plug 'chriskempson/base16-vim'
 " Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf'
@@ -151,6 +151,7 @@ let g:ctrlp_custom_ignore = {
 
 " vim-airline
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 
