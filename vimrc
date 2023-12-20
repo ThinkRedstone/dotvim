@@ -17,6 +17,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'andymass/vim-matchup'
 Plug 'vim-airline/vim-airline'
 Plug 'chriskempson/base16-vim'
+Plug 'morhetz/gruvbox'
 " Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -154,6 +155,7 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme='dark'
 
 " vim-jsx
 let g:jsx_ext_required = 0
