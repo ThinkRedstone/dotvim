@@ -484,17 +484,6 @@ function! OpenSpecHelper()
 endfunction
 map <Leader>s :call OpenSpecHelper()<CR>
 
-function! OpenFactoryFile()
-  if filereadable("spec/support/factories.rb")
-    execute ":tab drop spec/support/factories.rb"
-  else
-    if filereadable("spec/factories.rb")
-      execute ":tab drop spec/factories.rb"
-    end
-  end
-endfunction
-map <Leader>f :call OpenFactoryFile()<CR>
-
 map <Leader>v :tab drop $MYVIMRC<CR>
 " map <Leader>z :tab drop ~/.zshrc<CR>
 map <Leader>pc :tab drop ~/Dropbox/.personal_configs/aliases_and_functions.sh<CR>
@@ -545,6 +534,9 @@ endfunction
 command! -range -nargs=0 SDB call s:selection_DB()
 
 command! Staging let b:db="postgresql://postgres@staging-database.cwr5toyofssk.us-east-1.rds.amazonaws.com:5432/postgres"
+
+nnoremap <leader>f :.DB<CR>
+vnoremap <leader>f :SDB<CR>
 
 " ┌───────────────────────────────────┐
 " │             Shortcuts             │
