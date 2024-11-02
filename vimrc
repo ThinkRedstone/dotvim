@@ -203,6 +203,9 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='dark'
+" This is a workaround for airline issue 2691, which causes whitespace issues
+" in newer versions of vim
+let g:airline_symbols = {'maxlinenr': '≡'}
 
 " vim-jsx
 let g:jsx_ext_required = 0
