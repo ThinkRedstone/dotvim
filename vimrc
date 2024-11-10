@@ -118,6 +118,8 @@ nnoremap <leader>c<space> :NERDCommenterToggle<CR>
 nnoremap <leader>r :ALEFindReferences<CR>
 nnoremap <leader>d :ALEHover<CR>
 nnoremap <c-p> :Files<CR>
+nnoremap <space> <Plug>(easymotion-prefix)
+vnoremap <space> <Plug>(easymotion-prefix)
 
 " Remove annoying colorizer map
 let g:colorizer_nomap=1
@@ -180,44 +182,25 @@ function! s:align()
   endif
 endfunction
 
-if exists(":Tabularize")
-  nmap <Leader>t= :Tabularize /=<CR>
-  vmap <Leader>t= :Tabularize /=<CR>
-  nmap <Leader>t> :Tabularize /=><CR>
-  vmap <Leader>t> :Tabularize /=><CR>
-  nmap <Leader>t: :Tabularize /:\zs<CR>
-  vmap <Leader>t: :Tabularize /:\zs<CR>
-endif
-
-" CtrlP
-let g:ctrlp_use_caching = 1
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  'node_modules$',
-  \ 'file': '\v\.(exe|so|dll|.DS_Store)$',
-  \ }
-
 " vim-airline
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#syntastic#enabled = 1
-let g:airline#extensions#tabline#enabled = 1
 let g:airline_theme='dark'
 " This is a workaround for airline issue 2691, which causes whitespace issues
 " in newer versions of vim
 let g:airline_symbols = {'maxlinenr': '≡'}
 
-" vim-jsx
-let g:jsx_ext_required = 0
-
 " ALE
-let g:ale_linters = {'rust': ['analyzer'], 'python': ['pyright']}
+let g:ale_linters = {'rust': ['analyzer'], 'python': ['pyright', 'flake8', 'mypy']}
+let g:ale_fixers = {'python': ['black']}
+let g:ale_fix_on_save=0
 let g:ale_floating_preview=1
 let g:ale_python_auto_virtualenv=1
 set completeopt=menu,popup
 
-" highlight clear ALEErrorSign
-" highlight clear ALEWarningSign
+let g:ale_python_flake8_options = '--max-line-length 120'
+let g:ale_python_black_options='--line-length=120'
 
 " ┌───────────────────────────────────┐
 " │             Settings              │
@@ -252,8 +235,8 @@ autocmd FileType ruby,eruby set noballooneval
 " Set text width for MarkDown files
 autocmd FileType markdown set textwidth=80
 
-" Make terminals always have no numbering
-autocmd TerminalWinOpen * setlocal nonumber norelativenumber
+" Make terminals always have no numbering or spelling
+autocmd TerminalWinOpen * setlocal nonumber norelativenumber nospell
 
 " Autoindent with two spaces, always expand tabs
 set tabstop=2
@@ -353,6 +336,8 @@ if has("gui_running") || $TERM == "xterm-256color" || $TERM == "xterm-kitty"
   colorscheme gruvbox
   hi SpellBad ctermul=red cterm=undercurl
   hi Normal ctermbg=NONE
+  hi ALEError ctermul=red
+  hi ALEWarning ctermul=yellow
 else
   let g:CSApprox_loaded = 0
 endif
