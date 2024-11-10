@@ -117,6 +117,7 @@ nnoremap <c-f> :NERDTreeFind<CR>
 nnoremap <leader>c<space> :NERDCommenterToggle<CR>
 nnoremap <leader>r :ALEFindReferences<CR>
 nnoremap <leader>d :ALEHover<CR>
+nnoremap rr :ALERename<CR>
 nnoremap <c-p> :Files<CR>
 nnoremap <space> <Plug>(easymotion-prefix)
 vnoremap <space> <Plug>(easymotion-prefix)
